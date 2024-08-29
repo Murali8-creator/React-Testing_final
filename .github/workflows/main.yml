@@ -34,4 +34,9 @@ jobs:
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
         with:
           args: >
+            -Dsonar.projectKey=react_testing_2
+            -Dsonar.sources=src
+            -Dsonar.tests=src
+            -Dsonar.exclusions=**/node_modules/**
+            -Dsonar.test.inclusions=**/*.spec.ts 
             -Dsonar.javascript.lcov.reportPaths=./subdirectory-path/coverage/lcov.info  
