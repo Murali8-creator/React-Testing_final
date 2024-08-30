@@ -69,6 +69,5 @@ jobs:
             High error rate detected after deployment! Rolling back...
             Failed action: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
             Grafana dashboard: https://<your_organization>.grafana.net/d/my-app-dashboard?from=now-1h&to=now
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_NOTIFICATIONS_TOKEN }}
+        
           
