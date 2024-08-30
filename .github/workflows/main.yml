@@ -35,52 +35,40 @@ jobs:
             -Dsonar.tests=src
             -Dsonar.exclusions=**/node_modules/**
             -Dsonar.test.inclusions=**/*.spec.ts 
-            -Dsonar.javascript.lcov.reportPaths=./coverage/lcov.info  
+            -Dsonar.javascript.lcov.reportPaths=./coverage/lcov.info
+      
+      - name: Notify Slack on Push
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
+          channel: C07JU52BBJT # Replace with your channel ID
+          text: |
+            New code pushed to ${{ github.repository }}
+            Commit message: ${{ github.event.head_commit.message }}
+            Pusher: ${{ github.actor }}
+            Action URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_NOTIFICATIONS_TOKEN }}
+        if: always() # This ensures the notification is sent regardless of the job outcome
+  
   deploy:
     name: 'Deployment'
     runs-on: ubuntu-latest
+    needs: build
     timeout-minutes: 10
     steps:
-      - name: notify slack
-        id: slack
-        uses: slackapi/slack-github-action@v1.24.0
-        if: ${{ failure() }}
+      - name: notify slack on failure
+        uses: 8398a7/action-slack@v3
+        if: failure()
         with:
-          channel-id: 'C07JU52BBJT' # slack channel #alerts-test
-          payload: |
-            {
-              "text": "GitHub Action failed",
-              "blocks": [
-                {
-                  "type": "section",
-                  "text": {
-                    "type": "mrkdwn",
-                    "text": "*Production deployment check failed* :fire_engine:\n High error rate detected after deployment! Rolling back..."
-                  }
-                },
-                {
-                  "type": "actions",
-                  "elements": [
-                    {
-                      "type": "button",
-                      "text": {
-                        "type": "plain_text",
-                        "text": ":github: Failed action"
-                      },
-                      "url": "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-                    },
-                    {
-                      "type": "button",
-                      "text": {
-                        "type": "plain_text",
-                        "text": ":grafana: Grafana dashboard"
-                      },
-                      "url": "https://<your_organization>.grafana.net/d/my-app-dashboard?from=now-1h&to=now"
-                    }
-                  ]
-                }
-              ]
-            }
+          status: ${{ job.status }}
+          channel: C07JU52BBJT # Replace with your channel ID
+          fields: repo,message,commit,author,action,eventName,ref,workflow
+          text: |
+            *Production deployment check failed* :fire_engine:
+            High error rate detected after deployment! Rolling back...
+            Failed action: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+            Grafana dashboard: https://<your_organization>.grafana.net/d/my-app-dashboard?from=now-1h&to=now
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_NOTIFICATIONS_TOKEN }}
-          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
+          
