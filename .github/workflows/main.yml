@@ -54,7 +54,6 @@ jobs:
             Pusher: ${{ github.actor }}
             Action URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
             Build Status: ${{ needs.build.result }}
-            Deploy Status: ${{ needs.deploy.result }}
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         if: always()
