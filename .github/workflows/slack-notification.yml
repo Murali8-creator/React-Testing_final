@@ -1,0 +1,27 @@
+name: Notify Slack
+
+on:
+  workflow_run:
+    workflows: ["*"]
+    types:
+      - completed
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Notify Slack
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ github.event.workflow_run.conclusion }}
+          fields: repo,message,commit,author,action,eventName,ref,workflow
+          text: |
+            Workflow: ${{ github.event.workflow_run.name }}
+            Status: ${{ github.event.workflow_run.conclusion }}
+            Repository: ${{ github.repository }}
+            Commit: ${{ github.event.workflow_run.head_commit.message }}
+            Author: ${{ github.event.workflow_run.head_commit.author.name }}
+            Action URL: ${{ github.event.workflow_run.html_url }}
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        if: always()
