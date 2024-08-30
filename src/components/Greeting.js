@@ -13,7 +13,7 @@ const Greeting = () => {
         <div>
             <h2>Hello world!</h2>
             {!changedText && <Output>It's good to see you!</Output>}
-            {changedText && <Output>Changed</Output> }
+            {changedText && <Output>Changed text</Output> }
             <button onClick={changeTextHandler}>change</button>
         </div>
     );
