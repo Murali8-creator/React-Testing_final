@@ -48,7 +48,7 @@ jobs:
             Pusher: ${{ github.actor }}
             Action URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_NOTIFICATIONS_TOKEN }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         if: always() # This ensures the notification is sent regardless of the job outcome
   
   deploy:
