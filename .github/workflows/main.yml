@@ -57,6 +57,8 @@ jobs:
     needs: build
     timeout-minutes: 10
     steps:
+      - name: logger
+        run: echo 'hai'
       - name: notify slack on failure
         uses: 8398a7/action-slack@v3
         if: failure()
