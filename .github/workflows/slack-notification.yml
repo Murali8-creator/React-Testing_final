@@ -12,11 +12,10 @@ jobs:
         uses: 8398a7/action-slack@v3
         with:
           status: ${{ github.event.workflow_run.conclusion }}
-          fields: repo,message,commit,author,action,eventName,ref,workflow
           text: |
             *${{ github.repository }} - #${{ github.run_number }}* Started by user ${{ github.actor }} (Open)
             *Status: ${{ github.event.workflow_run.conclusion }} after ${{ github.event.workflow_run.run_duration_ms }} ms*
-            ${{ github.event.workflow_run.head_commit.message }}
+            *${{ github.repository }} - #${{ github.run_number }}* changes ${{ github.event.workflow_run.head_commit.message }}
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         if: always()
