@@ -4,18 +4,26 @@ on:
     workflows: ["Build and Analyze"]
     types:
       - completed
+
 jobs:
   notify:
     runs-on: ubuntu-latest
     steps:
+      - name: Calculate and store workflow duration
+        id: duration_calc
+        run: |
+          start_time=$(date -d "${{ github.event.workflow_run.run_started_at }}" +%s)
+          end_time=$(date -d "${{ github.event.workflow_run.run_finished_at }}" +%s)
+          duration=$(( $end_time - $start_time ))
+          echo "duration=$duration" >> $GITHUB_OUTPUT
+
       - name: Notify Slack
         uses: 8398a7/action-slack@v3
         with:
           status: ${{ github.event.workflow_run.conclusion }}
           text: |
             *${{ github.repository }} - #${{ github.run_number }}* Started by user ${{ github.actor }} (Open)
-            *Status:* ${{ github.event.workflow_run.conclusion }} after ${{ github.event.workflow_run.jobs.build.outputs.duration }} ms
-
+            *Status:* ${{ github.event.workflow_run.conclusion }} after ${{ steps.duration_calc.outputs.duration }} seconds
             *Changes:*
             ${{ github.event.workflow_run.head_commit.message }}
         env:
