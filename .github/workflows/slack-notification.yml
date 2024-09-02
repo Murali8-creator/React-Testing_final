@@ -13,8 +13,7 @@ jobs:
         with:
           status: ${{ github.event.workflow_run.conclusion }}
           text: |
-            *${{ github.repository }} - #${{ github.run_number }}* Started by user ${{ github.actor }} (Open)
-            # *Status:* ${{ github.event.workflow_run.conclusion }} after ${{ github.event.workflow_run.duration_seconds }} seconds
+            *${{ github.repository }} - #${{ github.run_number }}* Started by user ${{ github.actor }}
             *Changes:*
             ${{ github.event.workflow_run.head_commit.message }}
         env:
