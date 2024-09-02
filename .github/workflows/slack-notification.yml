@@ -15,6 +15,9 @@ jobs:
           start_time=$(date -d "${{ github.event.workflow_run.run_started_at }}" +%s)
           end_time=$(date -d "${{ github.event.workflow_run.run_finished_at }}" +%s)
           duration=$(( $end_time - $start_time ))
+          echo $end_time
+          echo $start_time
+          echo $duration
           echo "duration=$duration" >> $GITHUB_OUTPUT
 
       - name: Notify Slack
