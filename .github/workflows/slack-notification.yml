@@ -8,6 +8,9 @@ jobs:
   notify:
     runs-on: ubuntu-latest
     steps:
+      - name: Retrieve build time from GitHub Actions environment
+        run: |
+          echo "The build time stored in Workflow 1 is: ${{ env.WORKFLOW_VALUE }}"
       - name: Notify Slack
         uses: 8398a7/action-slack@v3
         with:
