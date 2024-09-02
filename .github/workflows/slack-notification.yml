@@ -8,17 +8,23 @@ jobs:
   notify:
     runs-on: ubuntu-latest
     steps:
-      - name: Retrieve build time from GitHub Actions environment
-        run: |
-          echo "The build time stored in Workflow 1 is: ${{ env.WORKFLOW_VALUE }}"
-      - name: Notify Slack
-        uses: 8398a7/action-slack@v3
-        with:
+       - name: Download build time artifact
+         uses: actions/download-artifact@v2
+         with:
+          name: build-time
+
+       - name: Read and display build time
+         run: |
+          BUILD_TIME=$(cat build_time.txt)
+          echo "The build time stored in Workflow 1 was: $BUILD_TIME"
+       - name: Notify Slack
+         uses: 8398a7/action-slack@v3
+         with:
           status: ${{ github.event.workflow_run.conclusion }}
           text: |
             *${{ github.repository }} - #${{ github.run_number }}* Started by user ${{ github.actor }}
             *Changes:*
             ${{ github.event.workflow_run.head_commit.message }}
-        env:
+         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-        if: always()
+         if: always()
