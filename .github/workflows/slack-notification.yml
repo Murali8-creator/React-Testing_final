@@ -15,7 +15,7 @@ jobs:
           text: |
             *${{ github.repository }} - #${{ github.run_number }}* Started by user ${{ github.actor }} (Open)
             *Status: ${{ github.event.workflow_run.conclusion }} after ${{ github.event.workflow_run.run_duration_ms }} ms*
-            *${{ github.repository }} - #${{ github.run_number }}* Changes:\n ${{ github.event.workflow_run.head_commit.message }}
+            *${{ github.repository }} - #${{ github.run_number }}* Changes:*\n ${{ github.event.workflow_run.head_commit.message }}
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         if: always()
