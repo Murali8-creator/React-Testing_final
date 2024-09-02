@@ -28,6 +28,7 @@ jobs:
           end_time=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
           duration=$(( $(date -d "$end_time" +%s) - $start_time ))
           echo "duration=$duration" >> $GITHUB_ENV
+          echo duration
   
         
       - name: SonarQube Scan
