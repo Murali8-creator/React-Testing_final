@@ -1,11 +1,9 @@
 name: Notify Slack
-
 on:
   workflow_run:
     workflows: ["*"]
     types:
       - completed
-
 jobs:
   notify:
     runs-on: ubuntu-latest
@@ -16,8 +14,8 @@ jobs:
           status: ${{ github.event.workflow_run.conclusion }}
           fields: repo,message,commit,author,action,eventName,ref,workflow
           text: |
-            Workflow: ${{ github.event.workflow_run.name }}
-            Status: ${{ github.event.workflow_run.conclusion }}
+            *${{ github.event.workflow_run.name }}*
+            Status: ${{ github.event.workflow_run.conclusion }} 
             Repository: ${{ github.repository }}
             Commit: ${{ github.event.workflow_run.head_commit.message }}
             Author: ${{ github.event.workflow_run.head_commit.author.name }}
