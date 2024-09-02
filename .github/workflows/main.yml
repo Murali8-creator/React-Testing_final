@@ -28,8 +28,7 @@ jobs:
           start_time=$(date -d "${{ github.event.workflow_run.run_started_at }}" +%s)
           end_time=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
           duration=$(( $(date -d "$end_time" +%s) - $start_time ))
-          echo "duration=$duration" >> $GITHUB_ENV
-          echo "::set-output name=duration::$duration"  
+          echo "{duration}={duration}" >> $GITHUB_OUTPUT 
       # - name: Calculate and store workflow duration
       #   run: |
       #     start_time=$(date -d "${{ github.event.workflow_run.run_started_at }}" +%s)
