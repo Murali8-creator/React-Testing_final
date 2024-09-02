@@ -1,5 +1,4 @@
-name: Notify Slack
-on:
+name: Notify Slack on:
   workflow_run:
     workflows: ["*"]
     types:
@@ -15,7 +14,7 @@ jobs:
           fields: repo,message,commit,author,action,eventName,ref,workflow
           text: |
             *${{ github.repository }} - #${{ github.run_number }}* Started by user ${{ github.actor }} (Open)
-            *Status: ${{ github.event.workflow_run.conclusion }} after ${{ (github.event.workflow_run.run_duration_ms // 1000) | round }} sec*
+            *Status: ${{ github.event.workflow_run.conclusion }} after ${{ (github.event.workflow_run.run_duration_ms / 1000) | int }} sec*
             ${{ github.event.workflow_run.head_commit.message }}
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
