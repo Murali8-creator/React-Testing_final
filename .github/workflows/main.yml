@@ -22,9 +22,17 @@ jobs:
      
       - name: Debug - List coverage directory
         run: ls -R coverage
-      - name: Store build time in GitHub Actions environment
-        run: |
-          echo "WORKFLOW_VALUE=$(date '+%Y-%m-%d %H:%M:%S')" >> $GITHUB_OUTPUT   
+      - name: Get current time
+        run: echo "BUILD_TIME=$(date '+%Y-%m-%d %H:%M:%S')" >> $GITHUB_ENV
+
+      - name: Store build time in a file
+        run: echo "${{ env.BUILD_TIME }}" > build_time.txt
+
+      - name: Upload build time as artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: build-time
+          path: build_time.txt   
       # - name: Calculate and store workflow duration
       #   id: duration_calc
       #   run: |
