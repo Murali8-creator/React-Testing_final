@@ -10,40 +10,31 @@ jobs:
     steps:
       - name: Set start time
         run: echo "START_TIME=$(date +%s)" >> $GITHUB_ENV
-
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
-
       - name: Use Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-
       - name: Install dependencies
         run: npm ci
-
       - name: Run tests and generate coverage
         run: npm test -- --coverage --watchAll=false
-
       - name: Debug - List coverage directory
         run: ls -R coverage
-
       - name: Calculate build time
         run: |
           END_TIME=$(date +%s)
           BUILD_DURATION=$((END_TIME - START_TIME))
-          echo "BUILD_TIME=$(date -u -d @${BUILD_DURATION} +"%T")" >> $GITHUB_ENV
-
+          echo "BUILD_TIME=$(date -u -d @${BUILD_DURATION} '+%T')" >> $GITHUB_ENV
       - name: Store build time in a file
         run: echo "Build Time: ${{ env.BUILD_TIME }}" > build_time.txt
-
       - name: Upload build time as artifact
         uses: actions/upload-artifact@v4
         with:
           name: build-time
           path: build_time.txt   
-
       - name: SonarQube Scan
         uses: sonarsource/sonarqube-scan-action@master
         env:
