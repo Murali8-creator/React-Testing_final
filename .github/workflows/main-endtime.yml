@@ -1,5 +1,5 @@
-name: Build and Analyze
-on:
+name: Build and Analyze praveen
+on: 
   workflow_dispatch:
   #push:
     #branches:
