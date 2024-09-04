@@ -29,7 +29,7 @@ jobs:
           status: ${{ github.event.workflow_run.conclusion }}
           text: |
             *${{ github.repository }} - #${{ github.run_number }}* Started by user ${{ github.actor }}
-            *${{ github.repository }} - #${{ github.run_number }}* ${{ github.event.workflow_run.conclusion }} after ${{ steps.read_build_time.outputs.build_time }}
+            *${{ github.repository }} - #${{ github.run_number }}* ${{ github.event.workflow_run.conclusion }} after ${{ steps.read_build_time.outputs.build_time }} sec
             *${{ github.repository }} - #${{ github.run_number }}* *Changes:*
             ${{ github.event.workflow_run.head_commit.message }}
         env:
