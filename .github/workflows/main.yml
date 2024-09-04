@@ -23,13 +23,7 @@ jobs:
         run: npm test -- --coverage --watchAll=false
       - name: Debug - List coverage directory
         run: ls -R coverage
-      - name: Calculate build time
-        run: |
-          END_TIME=$(date +%s)
-          BUILD_DURATION=$((END_TIME - START_TIME))
-          echo "BUILD_TIME=$(date -u -d @${BUILD_DURATION} '+%T')" >> $GITHUB_ENV
-      - name: Store build time in a file
-        run: echo "${{ env.BUILD_TIME }}" > build_time.txt
+      
 
       - name: Upload build time as artifact
         uses: actions/upload-artifact@v4
@@ -49,5 +43,14 @@ jobs:
             -Dsonar.exclusions=**/node_modules/**
             -Dsonar.test.inclusions=**/*.spec.ts 
             -Dsonar.javascript.lcov.reportPaths=./coverage/lcov.info
+      - name: Calculate build time
+        if: always()
+        run: |
+          END_TIME=$(date +%s)
+          BUILD_DURATION=$((END_TIME - START_TIME))
+          echo "BUILD_TIME=$(date -u -d @${BUILD_DURATION} '+%T')" >> $GITHUB_ENV
+      - name: Store build time in a file
+        if: always()
+        run: echo "${{ env.BUILD_TIME }}" > build_time.txt      
             
             
