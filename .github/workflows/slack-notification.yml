@@ -19,7 +19,7 @@ jobs:
       - name: Read and convert build time
         id: read_build_time
         run: |
-          BUILD_TIME=$(cat artifacts/build_time.txt | awk -F': ' '{print $2}')
+          BUILD_TIME=$(cat artifacts/build_time.txt)
           # Convert HH:MM:SS to seconds
           TIME_SECONDS=$(echo $BUILD_TIME | awk -F: '{ print ($1 * 3600) + ($2 * 60) + $3 }')
           echo "The build time stored in Workflow 1 was: $TIME_SECONDS"
