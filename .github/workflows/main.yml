@@ -22,14 +22,7 @@ jobs:
       - name: Run tests and generate coverage
         run: npm test -- --coverage --watchAll=false
       - name: Debug - List coverage directory
-        run: ls -R coverage
-      
-
-      - name: Upload build time as artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: build-time
-          path: build_time.txt   
+        run: ls -R coverage  
       - name: SonarQube Scan
         uses: sonarsource/sonarqube-scan-action@master
         env:
@@ -52,5 +45,9 @@ jobs:
       - name: Store build time in a file
         if: always()
         run: echo "${{ env.BUILD_TIME }}" > build_time.txt      
-            
+      - name: Upload build time as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-time
+          path: build_time.txt       
             
