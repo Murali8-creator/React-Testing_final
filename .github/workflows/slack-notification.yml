@@ -25,7 +25,7 @@ jobs:
           echo "The build time stored in Workflow 1 was: $TIME_SECONDS"
           echo "build_time_seconds=$TIME_SECONDS" >> $GITHUB_OUTPUT
       - name: Notify Slack
-        uses: iRoachie/slack-github-actions@v2.3.2
+        uses: rtCamp/action-slack-notify@v2
         with:
           fields: none
           status: ${{ github.event.workflow_run.conclusion }}
