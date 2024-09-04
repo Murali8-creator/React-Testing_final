@@ -16,12 +16,14 @@ jobs:
           name: build-time
           path: artifacts
 
-      - name: Read and display build time
+      - name: Read and convert build time
         id: read_build_time
         run: |
-          BUILD_TIME=$(cat artifacts/build_time.txt)
+          BUILD_TIME=$(cat artifacts/build_time.txt | awk -F': ' '{print $2}')
+          # Convert HH:MM:SS to seconds
+          TIME_SECONDS=$(echo $BUILD_TIME | awk -F: '{ print ($1 * 3600) + ($2 * 60) + $3 }')
           echo "The build time stored in Workflow 1 was: $BUILD_TIME"
-          echo "build_time=$BUILD_TIME" >> $GITHUB_OUTPUT
+          echo "build_time_seconds=$TIME_SECONDS" >> $GITHUB_OUTPUT
 
       - name: Notify Slack
         uses: 8398a7/action-slack@v3 
@@ -29,7 +31,7 @@ jobs:
           status: ${{ github.event.workflow_run.conclusion }}
           text: |
             *${{ github.repository }} - #${{ github.run_number }}* Started by user ${{ github.actor }}
-            *${{ github.repository }} - #${{ github.run_number }}* ${{ github.event.workflow_run.conclusion }} after ${{ steps.read_build_time.outputs.build_time }} sec
+            *${{ github.repository }} - #${{ github.run_number }}* ${{ github.event.workflow_run.conclusion }} after ${{ steps.read_build_time.outputs.build_time_seconds }} sec
             *${{ github.repository }} - #${{ github.run_number }}* *Changes:*
             ${{ github.event.workflow_run.head_commit.message }}
         env:
