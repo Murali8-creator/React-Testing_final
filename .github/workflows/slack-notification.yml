@@ -34,8 +34,6 @@ jobs:
             *${{ github.repository }} - #${{ github.run_number }}* ${{ github.event.workflow_run.conclusion }} after ${{ steps.read_build_time.outputs.build_time_seconds }} sec
             *${{ github.repository }} - #${{ github.run_number }}* *Changes:*
             ${{ github.event.workflow_run.head_commit.message }}
-            # Deployment status: ${{ job.status }}
-            # Duration: ${{ env.duration }} seconds
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         if: always()
