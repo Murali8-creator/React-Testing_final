@@ -8,50 +8,42 @@ jobs:
     name: Build and Analyze
     runs-on: ubuntu-latest
     steps:
+      - name: Set start time
+        run: echo "START_TIME=$(date +%s)" >> $GITHUB_ENV
+
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+
       - name: Use Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+
       - name: Install dependencies
         run: npm ci
+
       - name: Run tests and generate coverage
         run: npm test -- --coverage --watchAll=false
-     
+
       - name: Debug - List coverage directory
         run: ls -R coverage
-      - name: Get current time
-        run: echo "BUILD_TIME=$(date '+%Y-%m-%d %H:%M:%S')" >> $GITHUB_ENV
+
+      - name: Calculate build time
+        run: |
+          END_TIME=$(date +%s)
+          BUILD_DURATION=$((END_TIME - START_TIME))
+          echo "BUILD_TIME=$(date -u -d @${BUILD_DURATION} +"%T")" >> $GITHUB_ENV
 
       - name: Store build time in a file
-        run: echo "${{ env.BUILD_TIME }}" > build_time.txt
+        run: echo "Build Time: ${{ env.BUILD_TIME }}" > build_time.txt
 
       - name: Upload build time as artifact
         uses: actions/upload-artifact@v4
         with:
           name: build-time
           path: build_time.txt   
-      # - name: Calculate and store workflow duration
-      #   id: duration_calc
-      #   run: |
-      #     start_time=$(date -d "${{ github.event.workflow_run.run_started_at }}" +%s)
-      #     end_time=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
-      #     duration=$(( $(date -d "$end_time" +%s) - $start_time ))
-      #     echo "{duration}={duration}" >> $GITHUB_OUTPUT 
-      #   secrets:
-      #      GITHUB_OUTPUT: ${{duration}}
-        
-      # - name: Calculate and store workflow duration
-      #   run: |
-      #     start_time=$(date -d "${{ github.event.workflow_run.run_started_at }}" +%s)
-      #     end_time=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
-      #     duration=$(( $(date -d "$end_time" +%s) - $start_time ))
-      #     echo "duration=$duration" >> $GITHUB_ENV
-      #     echo $duration
-  
-        
+
       - name: SonarQube Scan
         uses: sonarsource/sonarqube-scan-action@master
         env:
@@ -65,24 +57,3 @@ jobs:
             -Dsonar.exclusions=**/node_modules/**
             -Dsonar.test.inclusions=**/*.spec.ts 
             -Dsonar.javascript.lcov.reportPaths=./coverage/lcov.info
-
-  # notify:
-  #   name: 'Notify Slack'
-  #   runs-on: ubuntu-latest
-  #   needs: build
-  #   if: always()
-  #   steps:
-  #     - name: Notify Slack
-  #       uses: 8398a7/action-slack@v3
-  #       with:
-  #         status: ${{ job.status }}
-  #         fields: repo,message,commit,author,action,ref
-  #         text: |
-  #           Repository: ${{ github.repository }}
-  #           Commit message: ${{ github.event.head_commit.message }}
-  #           Pusher: ${{ github.actor }}
-  #           Action URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-  #           Build Status: ${{ needs.build.result }}
-  #       env:
-  #         SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-  #       if: always()
