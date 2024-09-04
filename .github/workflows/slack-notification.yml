@@ -26,18 +26,18 @@ jobs:
           echo "build_time_seconds=$TIME_SECONDS" >> $GITHUB_OUTPUT
 
       - name: Notify Slack
-        uses: rtCamp/action-slack-notify@v2
+        uses: slackapi/slack-github-action@v1.27.0
         with:
-          #status: ${{ github.event.workflow_run.conclusion }}
-          status:  ${{ job.status }}
-          text: |
-            #*${{ github.repository }} - #${{ github.run_number }}* Started by user ${{ github.actor }}
-            #*${{ github.repository }} - #${{ github.run_number }}* ${{ github.event.workflow_run.conclusion }} after ${{ steps.read_build_time.outputs.build_time_seconds }} sec
-            #*${{ github.repository }} - #${{ github.run_number }}* *Changes:*
-            #${{ github.event.workflow_run.head_commit.message }}
-            Deployment status: ${{ job.status }}
-            Duration: ${{ env.duration }} seconds
-           
+          slack-message: |
+            {
+              "text": "*${{ github.repository }} - #${{ github.run_number }}* \n
+              *Started by:* ${{ github.actor }}\n
+              *Status:* ${{ job.status }}\n
+              *Conclusion:* ${{ github.event.workflow_run.conclusion }} after ${{ steps.read_build_time.outputs.build_time_seconds }} sec\n
+              *Changes:* ${{ github.event.workflow_run.head_commit.message }}\n
+              *Deployment status:* ${{ job.status }}\n
+              *Duration:* ${{ env.duration }} seconds"
+            }
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         if: always()
