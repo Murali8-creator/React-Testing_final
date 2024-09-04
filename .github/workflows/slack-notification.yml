@@ -26,7 +26,7 @@ jobs:
           echo "build_time_seconds=$TIME_SECONDS" >> $GITHUB_OUTPUT
 
       - name: Notify Slack
-        uses: slackapi/slack-github-action@v1.27.0
+        uses: rtCamp/action-slack-notify@v2
         with:
           #status: ${{ github.event.workflow_run.conclusion }}
           status:  ${{ job.status }}
