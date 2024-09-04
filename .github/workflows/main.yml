@@ -29,7 +29,8 @@ jobs:
           BUILD_DURATION=$((END_TIME - START_TIME))
           echo "BUILD_TIME=$(date -u -d @${BUILD_DURATION} '+%T')" >> $GITHUB_ENV
       - name: Store build time in a file
-        run: echo "Build Time: ${{ env.BUILD_TIME }}" > build_time.txt
+        run: echo "${{ env.BUILD_TIME }}" > build_time.txt
+
       - name: Upload build time as artifact
         uses: actions/upload-artifact@v4
         with:
