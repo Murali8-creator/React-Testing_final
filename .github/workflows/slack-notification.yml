@@ -27,7 +27,7 @@ jobs:
       - name: Notify Slack
         uses: act10ns/slack@v2
         with:
-          fields: none
+          # fields: none
           status: ${{ github.event.workflow_run.conclusion }}
           text: |
             *${{ github.repository }} - #${{ github.run_number }}* Started by user ${{ github.actor }}
