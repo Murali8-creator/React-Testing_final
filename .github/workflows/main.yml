@@ -46,6 +46,7 @@ jobs:
         if: always()
         run: echo "${{ env.BUILD_TIME }}" > build_time.txt      
       - name: Upload build time as artifact
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: build-time
