@@ -26,8 +26,8 @@ jobs:
           echo "build_time_seconds=$TIME_SECONDS" >> $GITHUB_OUTPUT
       - name: Notify Slack
         uses: 8398a7/action-slack@v3 
-        fields: none
         with:
+          fields: none
           status: ${{ github.event.workflow_run.conclusion }}
           text: |
             *${{ github.repository }} - #${{ github.run_number }}* Started by user ${{ github.actor }}
