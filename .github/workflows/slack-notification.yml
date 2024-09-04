@@ -24,23 +24,18 @@ jobs:
           TIME_SECONDS=$(echo $BUILD_TIME | awk -F: '{ print ($1 * 3600) + ($2 * 60) + $3 }')
           echo "The build time stored in Workflow 1 was: $TIME_SECONDS"
           echo "build_time_seconds=$TIME_SECONDS" >> $GITHUB_OUTPUT
-
       - name: Notify Slack
-        uses: slackapi/slack-github-action@v1.27.0
+        uses: 8398a7/action-slack@v3 
+        fields: none
         with:
-          channel-id: 'C07JU52BBJT'
-          slack-message: |
-            {
-              "text": "*${{ github.repository }} - #${{ github.run_number }}* \n
-              *Started by:* ${{ github.actor }}\n
-              *Status:* ${{ job.status }}\n
-              *Conclusion:* ${{ github.event.workflow_run.conclusion }} after ${{ steps.read_build_time.outputs.build_time_seconds }} sec\n
-              *Changes:* ${{ github.event.workflow_run.head_commit.message }}\n
-              *Deployment status:* ${{ job.status }}\n
-              *Duration:* ${{ env.duration }} seconds"
-            }
+          status: ${{ github.event.workflow_run.conclusion }}
+          text: |
+            *${{ github.repository }} - #${{ github.run_number }}* Started by user ${{ github.actor }}
+            *${{ github.repository }} - #${{ github.run_number }}* ${{ github.event.workflow_run.conclusion }} after ${{ steps.read_build_time.outputs.build_time_seconds }} sec
+            *${{ github.repository }} - #${{ github.run_number }}* *Changes:*
+            ${{ github.event.workflow_run.head_commit.message }}
+            Deployment status: ${{ job.status }}
+            Duration: ${{ env.duration }} seconds
         env:
-          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
-        # env:
-        #   SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         if: always()
