@@ -28,7 +28,8 @@ jobs:
       - name: Notify Slack
         uses: slackapi/slack-github-action@v1.27.0
         with:
-          slack-message: >
+          channel-id: 'C07JU52BBJT'
+          slack-message: |
             {
               "text": "*${{ github.repository }} - #${{ github.run_number }}* \n
               *Started by:* ${{ github.actor }}\n
