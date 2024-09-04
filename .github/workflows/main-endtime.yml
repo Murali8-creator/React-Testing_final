@@ -48,8 +48,8 @@ jobs:
         run: echo "${{ env.BUILD_TIME }}" > build_time.txt      
             
       - name: Record end time and calculate duration
-        id: end_time
         if : always()
+        id: end_time
         run: |
           end_time=$(date +%s)
           duration=$((end_time - ${{ env.start_time }}))
