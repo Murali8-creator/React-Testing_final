@@ -45,6 +45,7 @@ jobs:
           BUILD_DURATION=$((END_TIME - START_TIME))
           echo "BUILD_TIME=$(date -u -d @${BUILD_DURATION} '+%T')" >> $GITHUB_ENV
       - name: Store build time in a file
+        if: always()
         run: echo "${{ env.BUILD_TIME }}" > build_time.txt      
             
       - name: Record end time and calculate duration
