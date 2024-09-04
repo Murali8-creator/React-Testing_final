@@ -1,0 +1,49 @@
+name: Build and Analyze
+on:
+  workflow_dispatch:
+  #push:
+    #branches:
+      #- master
+jobs:
+  build:
+    name: Build and Analyze
+    runs-on: ubuntu-latest
+    steps:
+      - name: Record start time
+        id: start_time
+        run: echo "start_time=$(date +%s)" >> $GITHUB_ENV
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install dependencies
+        run: npm ci
+      - name: Run tests and generate coverage
+        run: npm test -- --coverage --watchAll=false
+      - name: Debug - List coverage directory
+        run: ls -R coverage   
+      - name: SonarQube Scan
+        uses: sonarsource/sonarqube-scan-action@master
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+        with:
+          args: >
+            -Dsonar.projectKey=react_testing_2
+            -Dsonar.sources=src
+            -Dsonar.tests=src
+            -Dsonar.exclusions=**/node_modules/**
+            -Dsonar.test.inclusions=**/*.spec.ts 
+            -Dsonar.javascript.lcov.reportPaths=./coverage/lcov.info
+            
+      - name: Record end time and calculate duration
+        id: end_time
+        run: |
+          end_time=$(date +%s)
+          duration=$((end_time - ${{ env.start_time }}))
+          echo "Deployment completed in $duration seconds"
+          echo "duration=$duration" >> $GITHUB_ENV         
+            
