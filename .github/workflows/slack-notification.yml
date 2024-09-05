@@ -22,8 +22,7 @@ jobs:
           BUILD_TIME=$(cat artifacts/build_time.txt)
           # Convert HH:MM:SS to seconds
           TIME_SECONDS=$(echo $BUILD_TIME | awk -F: '{ print ($1 * 3600) + ($2 * 60) + $3 }')
-          echo "The build time stored in Workflow 1 was: $TIME_SECONDS"
-          echo "build_time_seconds=$TIME_SECONDS" >> $GITHUB_OUTPUT
+          
       - name: Notify Slack
         uses: act10ns/slack@v2
         with:
